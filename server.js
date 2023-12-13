@@ -13,7 +13,16 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/persons", (req, res) => {
-  res.send(data);
+  res.json(data);
+});
+
+app.get("/info", (req, res) => {
+  res.send(
+    `<div>
+      <p>Phonebook has info for ${data.length} people</p>
+      <p>${new Date().toString()}</p>
+    </div>`
+  );
 });
 
 app.listen(PORT, () => console.log(`Server is listening on port: ${PORT}`));
