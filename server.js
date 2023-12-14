@@ -7,6 +7,11 @@ let persons = [
   { id: 4, name: "Mary Poppendick", number: "39-23-23478" },
 ];
 
+const generateID = () => {
+  const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
+  return maxId + 1;
+};
+
 const PORT = 3001;
 
 const app = express();
@@ -37,10 +42,24 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
+  const name = req.body.name;
+  const number = req.body.number;
 
-  const person = req.body;
-  person.id = maxId + 1;
+  if (!name || !number)
+    return res.status(400).json({
+      message: "number or name missing",
+    });
+
+  const duplicatePerson = persons.find((person) => person.name === name);
+
+  if (duplicatePerson)
+    return res.status(400).json({ error: "name must be unique" });
+
+  const person = {
+    name,
+    number,
+    id: generateID(),
+  };
 
   persons = persons.concat(person);
   res.json(person);
