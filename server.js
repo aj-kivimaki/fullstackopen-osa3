@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 
 let persons = [
   { id: 1, name: "Arto Hellas", number: "0123456" },
@@ -13,11 +14,13 @@ const generateID = () => {
   return maxId + 1;
 };
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
+app.use(express.static("dist"));
 
 morgan.token("body", (req) => {
   return JSON.stringify(req.body);
